@@ -1,0 +1,30 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment files
+.env
+.venv/
+venv/
+
+# Test and tool caches
+.pytest_cache/
+
+# MLflow tracking
+.mlflow/
+mlruns/
+
+# Build / packaging artefacts
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+*.ipynb_checkpoints
+
+# macOS metadata
+.DS_Store
+
+# Log files
+*.log

@@ -1,0 +1,132 @@
+========================================================================
+  AVELLANEDA-STOIKOV (2008) THEORY VALIDATION REPORT
+  Experiment 1 – Symbolic & Numerical Derivation
+========================================================================
+
+========================================================================
+  1. FROZEN-INVENTORY VALUE FUNCTION
+========================================================================
+Under arithmetic Brownian motion  dS = sigma dW  and CARA utility
+  U(W) = -exp(-gamma * W),
+the frozen-inventory (q fixed) HJB equation admits the closed form:
+
+  v(x,s,q,t) = -exp(-gamma*x) * exp(-gamma*q*s)
+               * exp( gamma^2 * q^2 * sigma^2 * (T-t) / 2 )
+
+LaTeX:
+  v = - e^{- \gamma x} e^{- \gamma q s} e^{\frac{\gamma^{2} q^{2} \sigma^{2} \left(T - t\right)}{2}}
+
+
+========================================================================
+  2. RESERVATION PRICES
+========================================================================
+The optimal reservation prices satisfy:
+
+  r^a = s + (1 - 2q)*gamma*sigma^2*(T-t)/2
+  LaTeX: r^a = \frac{\gamma \sigma^{2} \left(1 - 2 q\right) \left(T - t\right)}{2} + s
+
+  r^b = s + (-1 - 2q)*gamma*sigma^2*(T-t)/2
+  LaTeX: r^b = \frac{\gamma \sigma^{2} \left(T - t\right) \left(- 2 q - 1\right)}{2} + s
+
+  r   = s - q*gamma*sigma^2*(T-t)  (reservation mid)
+  LaTeX: r = - \gamma q \sigma^{2} \left(T - t\right) + s
+
+
+========================================================================
+  3. THETA-ANSATZ DERIVATION OF RESERVATION PRICES
+========================================================================
+Substituting u = -exp(-gamma*x)*exp(-gamma*theta(s,q,t)) into the HJB
+equation and using the approximate solution
+  theta(s,q,t) = q*s - (q^2/2)*gamma*sigma^2*(T-t)
+yields:
+
+  r^b from theta: - T \gamma q \sigma^{2} - \frac{T \gamma \sigma^{2}}{2} + \gamma q \sigma^{2} t + \frac{\gamma \sigma^{2} t}{2} + s
+  r^b direct:     \frac{\gamma \sigma^{2} \left(T - t\right) \left(- 2 q - 1\right)}{2} + s
+  Consistent:     True
+
+  r^a from theta: - T \gamma q \sigma^{2} + \frac{T \gamma \sigma^{2}}{2} + \gamma q \sigma^{2} t - \frac{\gamma \sigma^{2} t}{2} + s
+  r^a direct:     \frac{\gamma \sigma^{2} \left(1 - 2 q\right) \left(T - t\right)}{2} + s
+  Consistent:     True
+
+
+========================================================================
+  4. SYMBOLIC IDENTITY VERIFICATION
+========================================================================
+  Midpoint identity  (r^a+r^b)/2 == r :  True
+  Spread identity    r^a - r^b == gamma*sigma^2*(T-t) :  True
+
+
+========================================================================
+  5. LIQUIDITY TERM AND QUOTE DISTANCES
+========================================================================
+  L(gamma,k) = (1/gamma)*ln(1 + gamma/k)
+  LaTeX: L = \frac{\log{\left(\frac{\gamma}{k} + 1 \right)}}{\gamma}
+
+  delta^a = \frac{\gamma \sigma^{2} \left(1 - 2 q\right) \left(T - t\right)}{2} + \frac{\log{\left(\frac{\gamma}{k} + 1 \right)}}{\gamma}
+
+  delta^b = \frac{\gamma \sigma^{2} \left(T - t\right) \left(2 q + 1\right)}{2} + \frac{\log{\left(\frac{\gamma}{k} + 1 \right)}}{\gamma}
+
+  Total spread identity delta^a+delta^b == gamma*sigma^2*(T-t)+2L:  True
+
+
+========================================================================
+  6. EQUATION-FAITHFUL vs TABLE-FAITHFUL SPREAD
+========================================================================
+Equation-faithful total spread (from Eq. 13 in the paper):
+  spread_eq = gamma*sigma^2*(T-t) + (2/gamma)*ln(1 + gamma/k)
+
+  This includes the inventory-risk component gamma*sigma^2*(T-t)
+  which vanishes at t = T.
+
+Table-faithful spread (numerical tables in the paper use only the
+  liquidity component, evaluated at q=0 / t=T):
+  psi(gamma,k) = (2/gamma)*ln(1 + gamma/k)
+
+  LaTeX: psi = \frac{2 \log{\left(\frac{\gamma}{k} + 1 \right)}}{\gamma}
+
+  Numerical values of psi for default k=1.5:
+    gamma= 0.01  =>  psi = 1.3289
+    gamma= 0.10  =>  psi = 1.2908
+    gamma= 0.50  =>  psi = 1.1507
+
+
+========================================================================
+  7. EXPONENTIAL INTENSITY DERIVATIVE
+========================================================================
+  Intensity model: lambda(delta) = A * exp(-k*delta)
+  Derivative check: d(lambda)/d(delta) + k*lambda == 0
+  Result: True
+
+
+========================================================================
+  8. NUMERICAL VERIFICATION – DEFAULT PARAMETERS
+========================================================================
+  s=100.0, T=1.0, sigma=2.0, gamma=0.1, k=1.5, A=140.0
+  q_values = [-2, -1, 0, 1, 2]
+  t_values = [0.0, 0.5, 0.9]
+
+  All midpoint identities hold:      True
+  All spread identities hold:        True
+  All total-spread identities hold:  True
+
+     q      t         r_a         r_b       r_mid     delta_a     delta_b
+  -----------------------------------------------------------------
+    -2   0.00    101.0000    100.6000    100.8000      1.6454      0.0454
+    -2   0.50    100.5000    100.3000    100.4000      1.1454      0.3454
+    -2   0.90    100.1000    100.0600    100.0800      0.7454      0.5854
+    -1   0.00    100.6000    100.2000    100.4000      1.2454      0.4454
+    -1   0.50    100.3000    100.1000    100.2000      0.9454      0.5454
+    -1   0.90    100.0600    100.0200    100.0400      0.7054      0.6254
+     0   0.00    100.2000     99.8000    100.0000      0.8454      0.8454
+     0   0.50    100.1000     99.9000    100.0000      0.7454      0.7454
+     0   0.90    100.0200     99.9800    100.0000      0.6654      0.6654
+     1   0.00     99.8000     99.4000     99.6000      0.4454      1.2454
+     1   0.50     99.9000     99.7000     99.8000      0.5454      0.9454
+     1   0.90     99.9800     99.9400     99.9600      0.6254      0.7054
+     2   0.00     99.4000     99.0000     99.2000      0.0454      1.6454
+     2   0.50     99.7000     99.5000     99.6000      0.3454      1.1454
+     2   0.90     99.9400     99.9000     99.9200      0.5854      0.7454
+
+========================================================================
+  END OF REPORT
+========================================================================
